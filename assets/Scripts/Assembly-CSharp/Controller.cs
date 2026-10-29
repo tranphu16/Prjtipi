@@ -5980,7 +5980,7 @@ public class Controller : IMessageHandler
                             @char.idAuraEff = msg.reader().readShort();
                             @char.idEff_Set_Item = msg.reader().readSByte();
                             @char.idHat = msg.reader().readShort();
-                            if (@char.bag >= 201)
+                            if (@char.bag >= 201 && @char.bag < 255)
                             {
                                 Effect effect = new Effect(@char.bag, @char, 2, -1, 10, 1);
                                 effect.typeEff = 5;

@@ -3789,14 +3789,7 @@ public class Char : IMapObject
 		{
 			return;
 		}
-		if (me)
-		{
-			if (!isPaintAura2 && idAuraEff > -1)
-			{
-				return;
-			}
-		}
-		else if (idAuraEff > -1)
+		if ((me && !isPaintAura2) || idAuraEff > -1)
 		{
 			return;
 		}
@@ -5768,10 +5761,14 @@ public class Char : IMapObject
 
 	private void paintEff_Pet(mGraphics g)
 	{
+		if (me && !isPaintAura)
+		{
+			return;
+		}
 		for (int i = 0; i < vEffChar.size(); i++)
 		{
 			Effect effect = (Effect)vEffChar.elementAt(i);
-			if (effect.effId >= 201)
+			if (effect.effId >= 201 && effect.effId < 255)
 			{
 				effect.paint(g);
 			}
@@ -5813,7 +5810,7 @@ public class Char : IMapObject
 
 	private void paintSuperEffFront(mGraphics g)
 	{
-		if (!isPaintAura2)
+		if ((me && !isPaintAura2) || idAuraEff > -1)
 		{
 			return;
 		}
@@ -5856,17 +5853,18 @@ public class Char : IMapObject
 					addDustEff(1);
 				}
 			}
-			if (clevel == 14 && cPower < 50000000000L)
+			if (clevel >= 16)
 			{
-				if (GameCanvas.gameTick % 2 == 0)
+				int num = 7599;
+				int num2 = 4;
+				Small small = SmallImage.imgNew[num];
+				if (small == null)
 				{
-					tBlue++;
+					SmallImage.createImage(num);
+					return;
 				}
-				if (tBlue > 6)
-				{
-					tBlue = 0;
-				}
-				g.drawImage(GameCanvas.imgBlue[tBlue], cx, cy + 9, mGraphics.BOTTOM | mGraphics.HCENTER);
+				int y = GameCanvas.gameTick / 4 % num2 * (mGraphics.getImageHeight(small.img) / num2);
+				g.drawRegion(small.img, 0, y, mGraphics.getImageWidth(small.img), mGraphics.getImageHeight(small.img) / num2, 0, cx, cy + 2, mGraphics.BOTTOM | mGraphics.HCENTER);
 			}
 			else if (clevel == 15 || cPower >= 50000000000L)
 			{
@@ -5880,30 +5878,17 @@ public class Char : IMapObject
 				}
 				g.drawImage(GameCanvas.imgViolet[tBlue], cx, cy + 9, mGraphics.BOTTOM | mGraphics.HCENTER);
 			}
-			else
+			else if (clevel == 14)
 			{
-				if (clevel < 16)
+				if (GameCanvas.gameTick % 2 == 0)
 				{
-					return;
+					tBlue++;
 				}
-				int num = -1;
-				int num2 = 4;
-				if (clevel >= 16 && clevel < 22)
+				if (tBlue > 6)
 				{
-					num = 7599;
-					num2 = 4;
+					tBlue = 0;
 				}
-				if (num != -1)
-				{
-					Small small = SmallImage.imgNew[num];
-					if (small == null)
-					{
-						SmallImage.createImage(num);
-						return;
-					}
-					int y = GameCanvas.gameTick / 4 % num2 * (mGraphics.getImageHeight(small.img) / num2);
-					g.drawRegion(small.img, 0, y, mGraphics.getImageWidth(small.img), mGraphics.getImageHeight(small.img) / num2, 0, cx, cy + 2, mGraphics.BOTTOM | mGraphics.HCENTER);
-				}
+				g.drawImage(GameCanvas.imgBlue[tBlue], cx, cy + 9, mGraphics.BOTTOM | mGraphics.HCENTER);
 			}
 		}
 		else
@@ -7864,6 +7849,12 @@ public class Char : IMapObject
 	public void addEffChar(Effect e)
 	{
 		removeEffChar(0, e.effId);
+		if (e.effId == 78 || e.effId == 1110 || e.effId == 1109 || e.typeEff == 5)
+		{
+			removeEffChar(0, 78);
+			removeEffChar(0, 1110);
+			removeEffChar(0, 1109);
+		}
 		vEffChar.addElement(e);
 	}
 
@@ -7886,6 +7877,10 @@ public class Char : IMapObject
 			Effect effect = (Effect)vEffChar.elementAt(i);
 			if (effect.layer == 0)
 			{
+				if (me && !isPaintAura && (effect.typeEff == 5 || effect.effId == 78 || effect.effId == 1110 || effect.effId == 1109))
+				{
+					continue;
+				}
 				bool flag = true;
 				if (effect.isStand == 0)
 				{
@@ -7906,6 +7901,10 @@ public class Char : IMapObject
 			Effect effect = (Effect)vEffChar.elementAt(i);
 			if (effect.layer == 1)
 			{
+				if (me && !isPaintAura && (effect.typeEff == 5 || effect.effId == 78 || effect.effId == 1110 || effect.effId == 1109))
+				{
+					continue;
+				}
 				bool flag = true;
 				if (effect.isStand == 0)
 				{
@@ -8027,6 +8026,10 @@ public class Char : IMapObject
 		{
 			if ((!me || isPaintAura) && idAuraEff > -1 && (statusMe == 1 || statusMe == 6) && !GameCanvas.panel.isShow && mSystem.currentTimeMillis() - timeBlue > 0)
 			{
+				if (idAuraEff == 5 && (getEffById(1110) != null || getEffById(1109) != null))
+				{
+					return;
+				}
 				string nameImg = strEffAura + idAuraEff + "_0";
 				FrameImage fraImage = mSystem.getFraImage(nameImg);
 				if (fraImage != null && fraImage.nFrame > 0)
@@ -8045,6 +8048,10 @@ public class Char : IMapObject
 		try
 		{
 			if ((me && !isPaintAura) || idAuraEff <= -1)
+			{
+				return;
+			}
+			if (idAuraEff == 5 && (getEffById(1110) != null || getEffById(1109) != null))
 			{
 				return;
 			}
@@ -8095,6 +8102,10 @@ public class Char : IMapObject
 
 	public void paintEff_Lvup_behind(mGraphics g)
 	{
+		if (me && !isPaintAura)
+		{
+			return;
+		}
 		if (idEff_Set_Item != -1)
 		{
 			if (fraEff != null)
@@ -8110,6 +8121,10 @@ public class Char : IMapObject
 
 	public void paintEff_Lvup_front(mGraphics g)
 	{
+		if (me && !isPaintAura)
+		{
+			return;
+		}
 		if (idEff_Set_Item != -1)
 		{
 			if (fraEffSub != null)

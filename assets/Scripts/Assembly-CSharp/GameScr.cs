@@ -656,9 +656,9 @@ public class GameScr : mScreen, IChatable
 
     public static int shock_scr;
 
-    private static int[] shock_x = new int[4] { 1, -1, 1, -1 };
+    private static int[] shock_x = new int[4] { 0, 0, 0, 0 };
 
-    private static int[] shock_y = new int[4] { 1, -1, -1, 1 };
+    private static int[] shock_y = new int[4] { 0, 0, 0, 0 };
 
     private int tDoubleDelay;
 
@@ -5120,7 +5120,7 @@ public class GameScr : mScreen, IChatable
             GameCanvas.debug("PA3", 1);
             if (shock_scr > 0)
             {
-                g.translate(-cmx + shock_x[shock_scr % shock_x.Length], -cmy + shock_y[shock_scr % shock_y.Length]);
+                g.translate(-cmx, -cmy);
                 shock_scr--;
             }
             else

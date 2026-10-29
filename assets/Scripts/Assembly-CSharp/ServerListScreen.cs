@@ -808,7 +808,7 @@ public class ServerListScreen : mScreen, IActionListener
 		string text = Rms.loadRMSString("ResVersion");
 		int num = ((text == null || !(text != string.Empty)) ? (-1) : int.Parse(text));
 		bool hasRes = (Rms.loadRMS("x" + mGraphics.zoomLevel + "b160") != null);
-		if (num > 0 && hasRes)
+		if (!GameCanvas.isGetResourceFromServer() || (num > 0 && hasRes))
 		{
 			loadScreen = true;
 			GameCanvas.loadBG(16);

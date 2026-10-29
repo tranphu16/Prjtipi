@@ -85,7 +85,6 @@
     <Compile Include="Assets\Scripts\Assembly-CSharp\HairMod\TanSatHandler.cs" />
     <Compile Include="Assets\Scripts\Assembly-CSharp\Member.cs" />
     <Compile Include="Assets\Scripts\Assembly-CSharp\IMessageHandler.cs" />
-    <Compile Include="Assets\VideoScript.cs" />
     <Compile Include="Assets\Scripts\Assembly-CSharp\Math.cs" />
     <Compile Include="Assets\Scripts\Assembly-CSharp\HairMod\AutoPick.cs" />
     <Compile Include="Assets\Beebyte\Obfuscator\PipelineHook.cs" />
